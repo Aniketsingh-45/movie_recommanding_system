@@ -44,7 +44,7 @@ CineMatch uses **Content-Based Filtering** built on the **TMDB 5000 Movies & Cre
 
 ```mermaid
 flowchart LR
-    A[TMDB Dataset\nMovies & Credits] --> B[Feature Extraction\nOverview, Genres, Cast, Crew, Keywords]
+    A[Raw Datasets\nMovies & Credits CSVs in dataset/] --> B[Feature Extraction\nOverview, Genres, Cast, Crew, Keywords]
     B --> C[NLP Preprocessing\nStemming & Entity Normalization]
     C --> D[CountVectorizer\n5,000 Dimensions]
     D --> E[Cosine Similarity Matrix\n4,806 x 4,806]
@@ -65,13 +65,17 @@ $$\text{Cosine Similarity}(u, v) = \frac{u \cdot v}{\|u\| \|v\|}$$
 
 ```bash
 movie_recommanding_system/
+├── dataset/
+│   ├── tmdb_5000_movies.csv       # TMDB 5000 movies raw metadata dataset
+│   └── tmdb_5000_credits.csv      # TMDB 5000 cast and crew metadata dataset
+├── model/
+│   ├── movies.pkl                 # Processed movies DataFrame (ID, Title, Tags)
+│   └── similarity.pkl             # Cosine Similarity matrix (local / generated via notebook)
 ├── app.py                         # Main Streamlit interactive web application
-├── movie_recomader_system.ipynb   # Jupyter Notebook containing data preprocessing & model generation
-├── movies.pkl                     # Processed movies DataFrame (ID, Title, Tags)
-├── similarity.pkl                 # Precomputed Cosine Similarity matrix (local / Git LFS)
+├── movie_recomader_system.ipynb   # Jupyter Notebook containing data preprocessing & model training
 ├── requirements.txt               # Python package dependencies
 ├── .gitignore                     # Files and directories excluded from Git tracking
-└── README.md                      # Project documentation and guide
+└── README.md                      # Comprehensive project documentation
 ```
 
 ---
@@ -103,12 +107,15 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Similarity Matrix & Model Files
+### 4. Generate the Similarity Matrix (`similarity.pkl`)
 
-- `movies.pkl` is included directly in the repository.
-- `similarity.pkl` (~184 MB) exceeds GitHub's standard 100 MB upload limit. If you need to generate `similarity.pkl`:
-  1. Open and run the included notebook [movie_recomader_system.ipynb](movie_recomader_system.ipynb).
-  2. It will process the dataset and export both `movies.pkl` and `similarity.pkl` directly to your project directory.
+- `model/movies.pkl` is included in the repository.
+- `similarity.pkl` (~184 MB) is excluded from the Git repository via `.gitignore` to keep the repository lightweight and within GitHub upload limits.
+- To generate `model/similarity.pkl` locally, open and run the notebook:
+  ```bash
+  jupyter notebook movie_recomader_system.ipynb
+  ```
+  Running all cells will process the CSVs in `dataset/` and export `movies.pkl` and `similarity.pkl` into the `model/` directory.
 
 ### 5. Launch the Streamlit App
 ```bash
@@ -142,9 +149,9 @@ Certain Internet Service Providers (notably in India) block or route DNS queries
 </details>
 
 <details>
-<summary><b>How can I add more movies to the system?</b></summary>
+<summary><b>How does app.py locate the model files?</b></summary>
 <p>
-You can append newer movie records (with genres, keywords, cast, and crew) to the TMDB CSV files and re-run the pipeline in <code>movie_recomader_system.ipynb</code> to generate updated pickle artifacts.
+<code>app.py</code> automatically checks for <code>model/movies.pkl</code> and <code>model/similarity.pkl</code>. If present in a subfolder or root directory, it loads them seamlessly.
 </p>
 </details>
 
