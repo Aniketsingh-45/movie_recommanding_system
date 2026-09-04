@@ -1,0 +1,16 @@
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Environment files
+.env
+
+# Large model / similarity files (>100MB GitHub limit)
+similarity.pkl
