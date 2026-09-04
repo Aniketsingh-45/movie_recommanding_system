@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pickle
 import pandas as pd
@@ -152,8 +153,15 @@ st.markdown("""
 # Load Data
 @st.cache_resource
 def load_data():
-    movies = pickle.load(open('movies.pkl', 'rb'))
-    similarity = pickle.load(open('similarity.pkl', 'rb'))
+    if os.path.exists(os.path.join('model', 'movies.pkl')) and os.path.exists(os.path.join('model', 'similarity.pkl')):
+        movies_path = os.path.join('model', 'movies.pkl')
+        sim_path = os.path.join('model', 'similarity.pkl')
+    else:
+        movies_path = 'movies.pkl'
+        sim_path = 'similarity.pkl'
+
+    movies = pickle.load(open(movies_path, 'rb'))
+    similarity = pickle.load(open(sim_path, 'rb'))
     return movies, similarity
 
 
