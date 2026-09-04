@@ -12,5 +12,7 @@ __pycache__/
 # Environment files
 .env
 
-# Large model / similarity files (>100MB GitHub limit)
+# Model similarity matrix (>100MB file limit)
 similarity.pkl
+model/similarity.pkl
+*.pkl.gz
